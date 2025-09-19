@@ -80,3 +80,42 @@ Each model maps **hand joint angles → servo rotation angles (0–180°)**.
 
 ---
 
+
+## Hardware Setup
+
+This project has **two parts**:
+
+### 1. Laptop (Sender)
+
+* Runs `hand_control.py`
+* Uses **OpenCV + MediaPipe** to track hand gestures.
+* Extracts joint angles → predicts servo angles (0–180°).
+* Sends **5 servo angles** over **UDP** to the Raspberry Pi.
+
+### 2. Raspberry Pi (Receiver + Servo Driver)
+
+* Runs `pi_servo_receiver.py`
+* Listens for UDP packets from the laptop.
+* Controls **5 hobby servos** through a **PCA9685-based Servo HAT** (e.g., Waveshare or Adafruit).
+
+###  Servo Wiring (PCA9685 HAT → Servos)
+
+* **Channels 0–4** of the PCA9685 are used (one per finger).
+* Each channel has 3 pins:
+
+  * **V+ (red)** → Servo power (5V).
+  * **GND (black/brown)** → Servo ground.
+  * **PWM (yellow/orange)** → Control signal.
+* Connect the servo leads directly to the corresponding channel slots:
+
+  * Servo 1 → Channel 0
+  * Servo 2 → Channel 1
+  * Servo 3 → Channel 2
+  * Servo 4 → Channel 3
+  * Servo 5 → Channel 4
+
+ **Power Note**:
+
+* The PCA9685 HAT **must be powered externally** (typically 5–6V supply capable of handling total servo current).
+* Servos should not be powered directly from the Raspberry Pi’s 5V pin.
+
